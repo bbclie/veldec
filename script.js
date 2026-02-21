@@ -234,34 +234,21 @@ const translations = {
 function applyTranslations(locale) {
   const t = translations[locale] || translations['pt-BR'];
 
-  // data-i18n (textContent)
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (t[key] !== undefined) el.textContent = t[key];
   });
 
-  // data-i18n-html (innerHTML — for <br>, <em>, <strong>)
   document.querySelectorAll('[data-i18n-html]').forEach(el => {
     const key = el.getAttribute('data-i18n-html');
     if (t[key] !== undefined) el.innerHTML = t[key];
   });
 
-  // data-i18n-placeholder
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
     if (t[key] !== undefined) el.setAttribute('placeholder', t[key]);
   });
 }
-
-// -- TRADUÇÃO AUT --
-
-window.setLang = function(code, locale) {
-  langCurrent.textContent = code;
-  document.documentElement.lang = locale;
-  langDropdown.classList.remove('open');
-  applyTranslations(locale);
-  localStorage.setItem('veldec-lang', JSON.stringify({ code, locale })); // ← adicione isso
-};
 
 // ── HEADER SCROLL ──
 const header = document.getElementById('header');
@@ -286,6 +273,7 @@ window.setLang = function(code, locale) {
   document.documentElement.lang = locale;
   langDropdown.classList.remove('open');
   applyTranslations(locale);
+  localStorage.setItem('veldec-lang', JSON.stringify({ code, locale }));
 };
 
 // ── MOBILE NAV ──
@@ -352,11 +340,18 @@ const observer = new IntersectionObserver((entries) => {
 reveals.forEach(el => observer.observe(el));
 
 // ── FORM SUBMIT ──
-window.handleSubmit = function(e) {
+document.querySelector('.contact-form').addEventListener('submit', async function(e) {
   e.preventDefault();
-  const btn = e.target.querySelector('.form-submit');
-  btn.textContent = 'Mensagem enviada ✓';
-  btn.style.opacity = '0.6';
-  btn.style.cursor = 'default';
+  const btn = this.querySelector('.form-submit');
+  btn.textContent = '...';
   btn.disabled = true;
-};
+
+  const data = new FormData(this);
+  await fetch('https://formspree.io/f/maqddkjo', {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  });
+
+  window.location.href = 'thanks.html';
+});
