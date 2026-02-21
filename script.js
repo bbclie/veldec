@@ -253,6 +253,16 @@ function applyTranslations(locale) {
   });
 }
 
+// -- TRADUÇÃO AUT --
+
+window.setLang = function(code, locale) {
+  langCurrent.textContent = code;
+  document.documentElement.lang = locale;
+  langDropdown.classList.remove('open');
+  applyTranslations(locale);
+  localStorage.setItem('veldec-lang', JSON.stringify({ code, locale })); // ← adicione isso
+};
+
 // ── HEADER SCROLL ──
 const header = document.getElementById('header');
 window.addEventListener('scroll', () => {

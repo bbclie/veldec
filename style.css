@@ -921,10 +921,7 @@
     .btn-primary, .btn-ghost { width: 100%; text-align: center; }
 
     .hero-line {
-  position: static;
-  transform: none;
-  margin-top: 48px;
-  align-items: center;
+  display: none;
 }
 
     .stats-bar { flex-wrap: wrap; gap: 32px 48px; padding: 40px 30px; }
